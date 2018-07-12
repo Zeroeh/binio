@@ -62,28 +62,6 @@ func (p *Packet)WriteString(s string) {
 	}
 }
 
-func (p *Packet)ReadUTFString() string {
-	n := int(p.ReadUInt32())
-	if n == 0 {
-		return ""
-	}
-	var str []byte
-	str = p.Data[p.Index:p.Index+n]
-	p.advance(n)
-	return string(str)
-}
-
-func (p *Packet)WriteUTFString(s string) {
-	if s == "" {
-		p.WriteUInt32(0)
-		return
-	}
-	p.WriteUInt32(uint32(len(s)))
-	for i := range s {
-		p.WriteByte(s[i])
-	}
-}
-
 func (p *Packet)ReadBool() bool {
 	if p.ReadByte() == 1 {
 		return true
