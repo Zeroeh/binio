@@ -18,8 +18,13 @@ func (p *Packet) advance(amount int) int {
 	return amount
 }
 
-//ResizeBuffer resizes our packet to include any extra data portion
+//ResizeBuffer resizes our packet data to the specified size
 //Feel free to customize this function, as it can be tailored to many individual needs
+/*
+	size: the new size of the bytes buffer
+	keep: the number of bytes to keep in the new buffer. Default: 0
+	index: the index to start from in the old byte buffer. Default: 0
+*/
 func (p *Packet) resizeBuffer(size, keep, index int) {
 	if index > len(p.Data) { //could also substitute p.Length
 		return //out of bounds
