@@ -64,15 +64,24 @@ func main() {
 		newPlayer.PlayerStats[i] = int16(i)
 	}
 	fmt.Println("Player:", newPlayer)
+
 	//Now that we have our struct, we can start dumping it into bytes
 	p := new(binio.Packet)
-	p.Data = make([]byte, 16+len(newPlayer.PlayerName)+len(newPlayer.PlayerStats)*4) //need to allocate p.Data before we can write anything to it.
+
+	//need to allocate p.Data before we can write anything to it
 	//it will be left to you to decide how much will need to be allocated per buffer
+	p.Data = make([]byte, 16+len(newPlayer.PlayerName)+len(newPlayer.PlayerStats)*4)
 	newPlayer.WriteToBytes(p)
 	fmt.Println("Player struct as bytes:", p.Data)
 	
+	/*
+		at this point you can send your data over the wire
+		i.e. net.Conn.Write(p.Data)
+	*/
+
 	//now we can read our bytes back to a struct
 	p.Index = 0 //we're reading from the same packet so reset the index
+	//if this were a remote app we'd make a new packet on there
 	fmt.Println("Player re-read to a struct:", ReadPlayerToStruct(p))
 
 }
