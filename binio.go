@@ -25,7 +25,7 @@ func (p *Packet) advance(amount int) int {
 	keep: the number of bytes to keep in the new buffer. Default: 0
 	index: the index to start from in the old byte buffer. Default: 0
 */
-func (p *Packet) resizeBuffer(size, keep, index int) {
+func (p *Packet) ResizeBuffer(size, keep, index int) {
 	if index > len(p.Data) { //could also substitute p.Length
 		return //out of bounds
 	}
@@ -39,8 +39,8 @@ func (p *Packet) resizeBuffer(size, keep, index int) {
 }
 
 //ReadString reads the expected string size (n) and read until n
-func (p *Packet)readString() string {
-	n := int(p.readUInt16()) //absolute
+func (p *Packet)ReadString() string {
+	n := int(p.ReadUInt16()) //absolute
 	if n == 0 {
 		return ""
 	}
@@ -51,19 +51,19 @@ func (p *Packet)readString() string {
 }
 
 //WriteString writes int16 (len of string) and then the contents of s as bytes
-func (p *Packet)writeString(s string) {
+func (p *Packet)WriteString(s string) {
 	if s == "" {
-		p.writeUInt16(uint16(0))
+		p.WriteUInt16(uint16(0))
 		return
 	}
-	p.writeUInt16(uint16(len(s)))
+	p.WriteUInt16(uint16(len(s)))
 	for i := range s {
-		p.writeByte(s[i])
+		p.WriteByte(s[i])
 	}
 }
 
-func (p *Packet)readUTFString() string {
-	n := int(p.readUInt32())
+func (p *Packet)ReadUTFString() string {
+	n := int(p.ReadUInt32())
 	if n == 0 {
 		return ""
 	}
@@ -73,87 +73,87 @@ func (p *Packet)readUTFString() string {
 	return string(str)
 }
 
-func (p *Packet)writeUTFString(s string) {
+func (p *Packet)WriteUTFString(s string) {
 	if s == "" {
-		p.writeUInt32(0)
+		p.WriteUInt32(0)
 		return
 	}
-	p.writeUInt32(uint32(len(s)))
+	p.WriteUInt32(uint32(len(s)))
 	for i := range s {
-		p.writeByte(s[i])
+		p.WriteByte(s[i])
 	}
 }
 
-func (p *Packet)readBool() bool {
-	if p.readByte() == 1 {
+func (p *Packet)ReadBool() bool {
+	if p.ReadByte() == 1 {
 		return true
 	}
 	return false //assume anything else is false
 }
 
-func (p *Packet)writeBool(b bool) {
+func (p *Packet)WriteBool(b bool) {
 	if b == true {
-		p.writeByte(1)
+		p.WriteByte(1)
 	} else {
-		p.writeByte(0)
+		p.WriteByte(0)
 	}
 }
 
 //ReadFloat reads 4 bytes representing a float
-func (p *Packet)readFloat() float32 {
-	return math.Float32frombits(p.readUInt32())
+func (p *Packet)ReadFloat() float32 {
+	return math.Float32frombits(p.ReadUInt32())
 }
 
 //WriteFloat writes 4 bytes representing a float
-func (p *Packet)writeFloat(f float32) {
+func (p *Packet)WriteFloat(f float32) {
 	binary.BigEndian.PutUint32(p.Data[p.Index:p.Index+p.advance(4)], math.Float32bits(f))
 }
 
-func (p *Packet)readInt16() int16 {
+func (p *Packet)ReadInt16() int16 {
 	return int16(binary.BigEndian.Uint16(p.Data[p.Index:p.Index+p.advance(2)]))
 }
 
-func (p *Packet)writeInt16(i int16) {
+func (p *Packet)WriteInt16(i int16) {
 	binary.BigEndian.PutUint16(p.Data[p.Index:p.Index+p.advance(2)], uint16(i))
 }
 
-func (p *Packet)readUInt16() uint16 {
+func (p *Packet)ReadUInt16() uint16 {
 	return binary.BigEndian.Uint16(p.Data[p.Index:p.Index+p.advance(2)])
 }
 
-func (p *Packet)writeUInt16(i uint16) {
+func (p *Packet)WriteUInt16(i uint16) {
 	binary.BigEndian.PutUint16(p.Data[p.Index:p.Index+p.advance(2)], i)
 }
 
-func (p *Packet)readInt32() int32 {
+func (p *Packet)ReadInt32() int32 {
 	return int32(binary.BigEndian.Uint32(p.Data[p.Index:p.Index+p.advance(4)]))
 }
 
-func (p *Packet)writeInt32(i int32) {
+func (p *Packet)WriteInt32(i int32) {
 	binary.BigEndian.PutUint32(p.Data[p.Index:p.Index+p.advance(4)], uint32(i))
 }
 
-func (p *Packet)readUInt32() uint32 {
+func (p *Packet)ReadUInt32() uint32 {
 	return binary.BigEndian.Uint32(p.Data[p.Index:p.Index+p.advance(4)])
 }
 
-func (p *Packet)writeUInt32(i uint32) {
+func (p *Packet)WriteUInt32(i uint32) {
 	binary.BigEndian.PutUint32(p.Data[p.Index:p.Index+p.advance(4)], i)
 }
 
 //ReadByte reads and returns a singular byte
-func (p *Packet)readByte() byte {
+func (p *Packet)ReadByte() byte {
 	return p.Data[p.Index:p.Index+p.advance(1)][0]
 }
 
 //WriteByte writes a singular byte to the packet buffer
-func (p *Packet)writeByte(d byte) {
+func (p *Packet)WriteByte(d byte) {
 	p.Data[p.Index] = d
 	p.advance(1)
 }
 
 //ReadBytes is experimental and has not been tested
-func (p *Packet)readBytes(amount int) []byte {
+func (p *Packet)ReadBytes(amount int) []byte {
 	return p.Data[p.Index:p.Index+p.advance(amount)]
 }
 
