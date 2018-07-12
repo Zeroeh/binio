@@ -8,4 +8,4 @@ A package to write structured data to a bytes buffer, which is a technique commo
 Refer to `example.go` for usage and examples.
 
 # Notes
-The package was originally developed to be used for a specific game. You may have to change some of the functions to suit your needs. Note that there is no difference between Read/WriteString and Read/WriteUTFString other than the extra 2 bytes written in the UTF functions.
+The package was originally developed to be used for a specific game. You may have to change some of the functions to suit your needs.
