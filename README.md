@@ -5,7 +5,7 @@ A package to write structured data to a bytes buffer, which is a technique commo
 `go get github.com/Zeroeh/binio`
 
 # Usage
-Refer to `example.go` for usage and examples.
+Refer to `example/example.go` for usage and examples.
 
 # Notes
 The package was originally developed to be used for a specific game. You may have to change some of the functions to suit your individual needs.
