@@ -8,7 +8,7 @@ import (
 //Packet is a struct containing an underlying bytes buffer
 type Packet struct {
 	Index  int
-	Length int
+	Length int //the len() of Data. Must be explicitly set
 	Data   []byte
 }
 
