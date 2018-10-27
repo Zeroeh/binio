@@ -121,19 +121,19 @@ func (p *Packet)WriteUInt32(i uint32) {
 
 
 func (p *Packet) WriteInt64(i int64) {
-	binary.BigEndian.PutUint64(p.Data[p.Index:p.Index+p.Advance(8)], uint64(i))
+	binary.BigEndian.PutUint64(p.Data[p.Index:p.Index+p.advance(8)], uint64(i))
 }
 
 func (p *Packet) ReadInt64() int64 {
-	return int64(binary.BigEndian.Uint64(p.Data[p.Index : p.Index+p.Advance(8)]))
+	return int64(binary.BigEndian.Uint64(p.Data[p.Index : p.Index+p.advance(8)]))
 }
 
 func (p *Packet) WriteUInt64(i uint64) {
-	binary.BigEndian.PutUint64(p.Data[p.Index:p.Index+p.Advance(8)], i)
+	binary.BigEndian.PutUint64(p.Data[p.Index:p.Index+p.advance(8)], i)
 }
 
 func (p *Packet) ReadUInt64() uint64 {
-	return binary.BigEndian.Uint64(p.Data[p.Index : p.Index+p.Advance(8)])
+	return binary.BigEndian.Uint64(p.Data[p.Index : p.Index+p.advance(8)])
 }
 
 
