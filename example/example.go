@@ -13,43 +13,11 @@ type Player struct {
 	PlayerStats []int16
 }
 
-//Example of writing struct to bytes buffer
-func (p *Player)WriteToBytes(x *binio.Packet) {
-	x.WriteUInt32(p.PlayerID)
-	x.WriteString(p.PlayerName)
-	x.WriteFloat(p.PlayerLocation.X)
-	x.WriteFloat(p.PlayerLocation.Y)
-	x.WriteFloat(p.PlayerLocation.Z)
-	statSize := len(p.PlayerStats)
-	x.WriteInt16(int16(statSize))
-	//if writing an array of types it's best to write the len() of the slice as an int16
-	for i := 0; i < statSize; i++ {
-		x.WriteInt16(p.PlayerStats[i])
-	}
-}
-
-//be aware of the order in which you write the bytes as they will need to be read back in that same order
-func ReadPlayerToStruct(x *binio.Packet) Player {
-	tmp := Player{}
-	tmp.PlayerID = x.ReadUInt32()
-	tmp.PlayerName = x.ReadString()
-	tmp.PlayerLocation.X = x.ReadFloat()
-	tmp.PlayerLocation.Y = x.ReadFloat()
-	tmp.PlayerLocation.Z = x.ReadFloat()
-	sliceSize := int(x.ReadInt16()) //read the size of our PlayerStats slice
-	tmp.PlayerStats = make([]int16, sliceSize) //make sure to allocate for the structs slice
-	for i := 0; i < sliceSize; i++ {
-		tmp.PlayerStats[i] = x.ReadInt16()
-	}
-	return tmp
-}
-
 type PlayerPosition struct {
 	X float32
 	Y float32
 	Z float32
 }
-
 
 func main() {
 	//Create a new player struct
@@ -81,7 +49,40 @@ func main() {
 
 	//now we can read our bytes back to a struct
 	p.Index = 0 //we're reading from the same packet so reset the index
-	//if this were a remote app we'd make a new packet on there
+	//if this were a remote app/server we'd make a new packet here
 	fmt.Println("Player re-read to a struct:", ReadPlayerToStruct(p))
 
 }
+
+
+//Example of writing struct to bytes buffer
+func (p *Player)WriteToBytes(x *binio.Packet) {
+	x.WriteUInt32(p.PlayerID)
+	x.WriteString(p.PlayerName)
+	x.WriteFloat(p.PlayerLocation.X)
+	x.WriteFloat(p.PlayerLocation.Y)
+	x.WriteFloat(p.PlayerLocation.Z)
+	statSize := len(p.PlayerStats)
+	x.WriteInt16(int16(statSize))
+	//if writing an array of types it's best to write the len() of the slice as an int16
+	for i := 0; i < statSize; i++ {
+		x.WriteInt16(p.PlayerStats[i])
+	}
+}
+
+//be aware of the order in which you write the bytes as they will need to be read back in that same order
+func ReadPlayerToStruct(x *binio.Packet) Player {
+	tmp := Player{}
+	tmp.PlayerID = x.ReadUInt32()
+	tmp.PlayerName = x.ReadString()
+	tmp.PlayerLocation.X = x.ReadFloat()
+	tmp.PlayerLocation.Y = x.ReadFloat()
+	tmp.PlayerLocation.Z = x.ReadFloat()
+	sliceSize := int(x.ReadInt16()) //read the size of our PlayerStats slice
+	tmp.PlayerStats = make([]int16, sliceSize) //make sure to allocate for the structs slice
+	for i := 0; i < sliceSize; i++ { //now we can loop and read each player stat
+		tmp.PlayerStats[i] = x.ReadInt16()
+	}
+	return tmp
+}
+
